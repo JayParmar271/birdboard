@@ -19,10 +19,20 @@ class ProjectsTest extends TestCase
             'description' => $this->faker->paragraph,
         ];
 
-        $this->post('/projects', $attributes);
+        $this->post('/projects', $attributes)->assertRedirect('/projects');
 
         $this->assertDatabaseHas('projects', $attributes);
 
         $this->get('/projects')->assertSee($attributes['title']);
+    }
+
+    public function test_project_requires_title()
+    {
+        $this->post('projects', [])->assertSessionHasErrors('title');
+    }
+
+    public function test_project_requires_description()
+    {
+        $this->post('projects', [])->assertSessionHasErrors('description');
     }
 }
