@@ -28,11 +28,15 @@ class ProjectsTest extends TestCase
 
     public function test_project_requires_title()
     {
-        $this->post('projects', [])->assertSessionHasErrors('title');
+        $attributes = \App\Models\Project::factory()->raw(['title' => '']);
+
+        $this->post('projects', $attributes)->assertSessionHasErrors('title');
     }
 
     public function test_project_requires_description()
     {
-        $this->post('projects', [])->assertSessionHasErrors('description');
+        $attributes = \App\Models\Project::factory()->raw(['description' => '']);
+
+        $this->post('projects', $attributes)->assertSessionHasErrors('description');
     }
 }
