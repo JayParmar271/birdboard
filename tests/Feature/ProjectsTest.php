@@ -12,6 +12,8 @@ class ProjectsTest extends TestCase
 
     public function test_user_can_create_a_project()
     {
+        $this->actingAs(\App\Models\User::factory()->create());
+
         $this->withoutExceptionHandling();
 
         $attributes = [
@@ -32,13 +34,15 @@ class ProjectsTest extends TestCase
 
         $project = \App\Models\Project::factory()->create();
 
-        $this->get('projects/' . $project->id)
+        $this->get($project->path())
             ->assertSee($project->title)
             ->assertSee($project->description);
     }
 
     public function test_project_requires_title()
     {
+        $this->actingAs(\App\Models\User::factory()->create());
+
         $attributes = \App\Models\Project::factory()->raw(['title' => '']);
 
         $this->post('projects', $attributes)->assertSessionHasErrors('title');
@@ -46,8 +50,17 @@ class ProjectsTest extends TestCase
 
     public function test_project_requires_description()
     {
+        $this->actingAs(\App\Models\User::factory()->create());
+
         $attributes = \App\Models\Project::factory()->raw(['description' => '']);
 
         $this->post('projects', $attributes)->assertSessionHasErrors('description');
+    }
+
+    public function test_only_authenticated_user_can_create_project()
+    {
+        $attributes = \App\Models\Project::factory()->raw();
+
+        $this->post('projects', $attributes)->assertRedirect('login');
     }
 }
