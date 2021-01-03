@@ -6,9 +6,11 @@
     <title>Document</title>
 </head>
 <body>
-    @foreach ($project->tasks as $task)
-        <div>{{ $task->body }}></div>
-    @endforeach
+    @forelse ($project->tasks as $task)
+        <div>{{ $task->body }}</div>
+    @empty
+        <div>Begin adding tasks</div>
+    @endforelse
 
     <h1>{{ $project->title }}</h1>
     <div>{{ $project->description }}</div>
