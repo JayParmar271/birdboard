@@ -14,5 +14,6 @@
 
     <h1>{{ $project->title }}</h1>
     <div>{{ $project->description }}</div>
+    <div>{{ $project->notes }}</div>
 </body>
 </html>

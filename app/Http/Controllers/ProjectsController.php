@@ -33,9 +33,21 @@ class ProjectsController extends Controller
         auth()->user()->projects()->create(request()->validate([
             'title' => 'required',
             'description' => 'required',
+            'notes' => 'min:3'
         ]));
 
         // redirect
         return redirect('/projects');
+    }
+
+    public function update(Project $project)
+    {
+        if (auth()->user()->isNot($project->owner)) {
+            abort(403);
+        }
+
+        $project->update(request(['notes']));
+
+        return redirect($project->path());
     }
 }
