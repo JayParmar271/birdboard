@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Project;
 use App\Models\Task;
+use Tests\Setup\ProjectFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -49,13 +50,13 @@ class ProjectTasksTest extends TestCase
 
     public function test_only_owner_of_project_can_update_a_task()
     {
+        $project = app(ProjectFactory::class)->withTasks(1)->create();
+
+        dd($project->task);
+
         $this->signIn();
 
-        $project = Project::factory()->create();
-
-        $task = $project->addTask('test task');
-
-        $this->patch($task->path(), ['body' => 'changed'])
+        $this->patch($project->task[0]->path(), ['body' => 'changed'])
             ->assertStatus(403);
 
         $this->assertDatabaseMissing('tasks', ['body' => 'changed']);
@@ -63,17 +64,12 @@ class ProjectTasksTest extends TestCase
 
     public function test_a_task_can_be_updated()
     {
-        $this->withoutExceptionHandling();
+        $project = app(ProjectFactory::class)
+            ->ownedBy($this->signIn())
+            ->withTasks(1)
+            ->create();
 
-        $this->signIn();
-
-        $project = auth()->user()->projects()->create(
-            Project::factory()->raw()
-        );
-
-        $task = $project->addTask('test task');
-
-        $this->patch($project->path() . '/tasks/' . $task->id, [
+        $this->patch($project->path() . '/tasks/' . $project->tasks[0]->id, [
             'body' => 'changed',
             'completed' => true
         ]);
