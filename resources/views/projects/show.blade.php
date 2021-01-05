@@ -12,7 +12,7 @@
         <div>Begin adding tasks</div>
     @endforelse
 
-    <h1>{{ $project->title }}</h1>
+    <h1><a href="{{ $project->path() . '/edit' }}">{{ $project->title }}</a></h1>
     <div>{{ $project->description }}</div>
     <div>{{ $project->notes }}</div>
 </body>

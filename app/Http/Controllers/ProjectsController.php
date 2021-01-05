@@ -31,18 +31,29 @@ class ProjectsController extends Controller
         auth()->user()->projects()->create(request()->validate([
             'title' => 'required',
             'description' => 'required',
-            'notes' => 'min:3'
+            'notes' => 'min:3',
         ]));
 
         // redirect
         return redirect('/projects');
     }
 
+    public function edit(Project $project)
+    {
+        return view('projects.edit', compact('project'));
+    }
+
     public function update(Project $project)
     {
         $this->authorize('update', $project);
 
-        $project->update(request(['notes']));
+        $attributes = request()->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'notes' => 'min:3',
+        ]);
+
+        $project->update($attributes);
 
         return redirect($project->path());
     }
