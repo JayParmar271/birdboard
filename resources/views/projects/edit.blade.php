@@ -6,16 +6,14 @@
     <title>Document</title>
 </head>
 <body>
+    <h1>Edit Project</h1>
+
     <form method="POST" action="{{ $project->path() }}">
-        @csrf 
         @method('PATCH')
-        <h1>Edit Project</h1>
         
-        <p>Title</p>
-        <input type="text" name="title" value="{{ $project->title }}"> 
-        <p>Description</p>
-        <input type="text" name="description" value="{{ $project->description }}">
-        <p><button type="submit">Update Project</button></p>
+        @include('projects.form', [
+            'buttonText' => 'Update Project'
+        ])
     </form>
 </body>
 </html>

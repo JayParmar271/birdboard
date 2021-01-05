@@ -6,15 +6,13 @@
     <title>Document</title>
 </head>
 <body>
+    <h1>Let's start something new</h1>
+
     <form method="POST" action="/projects">
-        @csrf 
-        <h1>Create Project</h1>
-        
-        <p>Title</p>
-        <input type="text" name="title">
-        <p>Description</p>
-        <input type="text" name="description">
-        <p><button type="submit">Create Project</button></p>
+        @include('projects.form', [
+            'project' => new App\Models\Project,
+            'buttonText' => 'Create Project',
+        ])
     </form>
 </body>
 </html>
