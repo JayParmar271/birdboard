@@ -48,9 +48,9 @@ class ProjectsController extends Controller
         $this->authorize('update', $project);
 
         $attributes = request()->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'notes' => 'min:3',
+            'title' => 'sometimes|required',
+            'description' => 'sometimes|required',
+            'notes' => 'nullable',
         ]);
 
         $project->update($attributes);
