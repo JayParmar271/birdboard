@@ -7,11 +7,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class ActivityFeedTest extends TestCase
+class RecordActivityTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_creating_project_records_activity()
+    public function test_creating_project()
     {
         $project = ProjectFactory::create();
 
@@ -19,7 +19,7 @@ class ActivityFeedTest extends TestCase
         $this->assertEquals('created', $project->activity[0]->description);
     }
 
-    public function test_updating_project_records_activity()
+    public function test_updating_project()
     {
         $project = ProjectFactory::create();
         
@@ -29,7 +29,7 @@ class ActivityFeedTest extends TestCase
         $this->assertEquals('updated', $project->activity->last()->description);
     }
 
-    public function test_creating_task_records_project_activity()
+    public function test_creating_task_records()
     {
         $project = ProjectFactory::create();
 
@@ -39,7 +39,7 @@ class ActivityFeedTest extends TestCase
         $this->assertEquals('created_task', $project->activity->last()->description);
     }
 
-    public function test_completing_task_records_project_activity()
+    public function test_completing_task()
     {
         $project = ProjectFactory::withTasks(1)->create();
 
@@ -51,5 +51,30 @@ class ActivityFeedTest extends TestCase
 
         $this->assertCount(3, $project->activity);
         $this->assertEquals('completed_task', $project->activity->last()->description);
+    }
+
+    public function test_incompleting_a_task()
+    {
+        $project = ProjectFactory::withTasks(1)->create();
+
+        $this->actingAs($project->owner)
+            ->patch($project->tasks[0]->path(), [
+                'body' => 'lorem',
+                'completed' => true,
+            ]);
+
+        $this->assertCount(3, $project->activity);
+
+        $this->actingAs($project->owner)
+            ->patch($project->tasks[0]->path(), [
+                'body' => 'lorem',
+                'completed' => false,
+            ]);
+
+        $project->refresh();
+
+        $this->assertCount(4, $project->activity);
+
+        $this->assertEquals('incompleted_task', $project->activity->last()->description);
     }
 }
