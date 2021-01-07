@@ -11,6 +11,10 @@ class Task extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'completed' => 'boolean',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -26,6 +30,11 @@ class Task extends Model
 
             $task->project->recordActivity('completed_task');
         });
+    }
+
+    public function complete()
+    {
+        $this->update(['completed' => true]);
     }
 
     public function project()
