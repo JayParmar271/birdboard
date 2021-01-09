@@ -77,4 +77,13 @@ class RecordActivityTest extends TestCase
 
         $this->assertEquals('incompleted_task', $project->activity->last()->description);
     }
+
+    public function test_deleting_a_task()
+    {
+        $project = ProjectFactory::withTasks(1)->create();
+
+        $project->tasks[0]->delete();
+
+        $this->assertCount(3, $project->activity);
+    }
 }
